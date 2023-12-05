@@ -1,0 +1,35 @@
+version: "3"
+
+services:
+  backend:
+    container_name: "crm_backend"
+    build: backend
+    restart: always
+    ports:
+      - "127.0.0.1:8777:8000"
+    volumes:
+      - ./backend:/app
+    env_file:
+      - .env
+    expose:
+      - "8000"
+    networks:
+      - crm_network
+
+  postgres:
+    image: postgres:13
+    container_name: "crm_postgres"
+    restart: always
+    expose:
+      - "5432"
+    ports:
+      - "127.0.0.1:54333:5432"
+    env_file:
+      - .env
+    networks:
+      - crm_network
+
+networks:
+  crm_network:
+    name: crm_network
+    driver: bridge
