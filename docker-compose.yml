@@ -29,6 +29,34 @@ services:
     networks:
       - crm_network
 
+  minio:
+    image: minio/minio:latest
+    command: server --console-address ":9001" /data/
+    ports:
+      - "9777:9000"
+      - "9778:9001"
+    env_file:
+      - .env
+    volumes:
+      - minio-storage:/data
+    networks:
+      - crm_network
+    healthcheck:
+      test:
+        [
+          "CMD",
+          "curl",
+          "-f",
+          "http://localhost:9000/minio/health/live"
+        ]
+      interval: 30s
+      timeout: 20s
+      retries: 3
+
+volumes:
+  minio-storage:
+
+
 networks:
   crm_network:
     name: crm_network
