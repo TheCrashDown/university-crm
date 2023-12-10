@@ -123,6 +123,47 @@ class Event(Base):
     task = Column(String, ForeignKey("file.id"))
 
 
+class EventType(Base):
+    __tablename__ = "event_type"
+    id = Column(Integer, primary_key=True)
+
+    # lecture, seminar, general etc.
+    name = Column(String, nullable=False)
+
+    __table_args__ = UniqueConstraint("name", name="unique_event_type_name")
+
+
+class Quiz(Base):
+    __tablename__ = "quiz"
+    id = Column(Integer, primary_key=True)
+    name = Column(String, nullable=False)
+    teacher_name = Column(String)
+
+    __table_args__ = (UniqueConstraint("name", name="unique_quiz_name"),)
+
+
+class QuizQuestions(Base):
+    __tablename__ = "quiz_question"
+    id = Column(Integer, primary_key=True)
+    question = Column(String, nullable=False)
+    quiz = Column(Integer, ForeignKey("quiz.id"), nullable=False)
+
+    __table_args__ = (UniqueConstraint("id", name="unique_quiz_question_id"),)
+
+
+
+class QuizAnswers(Base):
+    __tablename__ = "quiz_answers"
+    id = Column(Integer, primary_key=True)
+    answer = Column(String)
+    quiz = Column(Integer, ForeignKey("quiz_question.id"), nullable=False)
+    student_id = Column(Integer, ForeignKey("user.id"), nullable=False)
+
+    __table_args__ = (UniqueConstraint("id", name="unique_quiz_question_id"),)
+
+    
+
+
 def init():
     """Creating database tables"""
     engine = create_engine(
