@@ -135,8 +135,8 @@ class EventType(Base):
 
 class Quiz(Base):
     __tablename__ = "quiz"
-    id = Column(Integer, primary_key=True)
-    name = Column(String, nullable=False)
+    id = Column(Integer, primary_key=True, unique=True)
+    name = Column(String, nullable=False, unique=True)
     teacher_name = Column(String)
 
     __table_args__ = (UniqueConstraint("name", name="unique_quiz_name"),)
@@ -161,8 +161,17 @@ class QuizAnswers(Base):
 
     __table_args__ = (UniqueConstraint("id", name="unique_quiz_question_id"),)
 
-    
 
+class Chat(Base):
+    __tablename__ = "chat"
+    id = Column(Integer, primary_key=True)
+    from_id = Column(Integer, ForeignKey("user.id"), nullable=False)
+    get_id = Column(Integer, ForeignKey("user.id"), nullable=False)
+    message = Column(String)
+
+    __table_args__ = (UniqueConstraint("id", name="unique_quiz_question_id"),)
+
+    
 
 def init():
     """Creating database tables"""
