@@ -4,6 +4,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from routers.polls_router import router as polls_router
 from routers.teacher_router import router as teacher_router
 from routers.student_router import router as student_router
+from routers.admin_router import router as admin_router
 
 app = FastAPI()
 
@@ -20,3 +21,4 @@ app.add_middleware(
 app.include_router(polls_router, prefix="/polls", tags=["Working with polls"])
 app.include_router(teacher_router, prefix="/teacher", tags=["Student functions"])
 app.include_router(student_router, prefix="/student", tags=["Teacher functions"])
+app.include_router(admin_router, prefix="/admin", tags=["Admin & debug functions"])

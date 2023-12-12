@@ -1,4 +1,4 @@
-from .. import main
+from src import main
 
 
 def get_stud_info(username=str):

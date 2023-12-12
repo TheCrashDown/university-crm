@@ -3,6 +3,8 @@
 import os
 
 import boto3
+from sqlalchemy import create_engine
+from sqlalchemy.orm import sessionmaker
 
 import logging
 
@@ -11,6 +13,14 @@ logger = logging.getLogger(__name__)
 
 class Util:
     """Util class"""
+
+    @staticmethod
+    def get_session():
+        engine = create_engine(os.environ.get("POSTGRES_SECRET"))
+        Session = sessionmaker(bind=engine)
+        session = Session()
+
+        return session
 
     @staticmethod
     def s3_connect():

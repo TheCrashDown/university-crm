@@ -41,7 +41,7 @@ class User(Base):
     lastname = Column(String)
 
     type_id = Column(Integer, ForeignKey("user_type.id"), nullable=False)
-    group_id = Column(Integer, ForeignKey("group.id"), nullable=False)
+    group_id = Column(Integer, ForeignKey("group.id"))
 
     __table_args__ = (UniqueConstraint("username", name="unique_username"),)
 
@@ -101,7 +101,7 @@ class EventType(Base):
     # lecture, seminar, general etc.
     name = Column(String, nullable=False)
 
-    __table_args__ = UniqueConstraint("name", name="unique_event_type_name")
+    __table_args__ = (UniqueConstraint("name", name="unique_event_type_name"),)
 
 
 class Event(Base):
@@ -119,18 +119,8 @@ class Event(Base):
     start = Column(DateTime)
     end = Column(DateTime)
 
-    materials = Column(String, ForeignKey("file.id"))
-    task = Column(String, ForeignKey("file.id"))
-
-
-class EventType(Base):
-    __tablename__ = "event_type"
-    id = Column(Integer, primary_key=True)
-
-    # lecture, seminar, general etc.
-    name = Column(String, nullable=False)
-
-    __table_args__ = UniqueConstraint("name", name="unique_event_type_name")
+    materials = Column(Integer, ForeignKey("file.id"))
+    task = Column(Integer, ForeignKey("file.id"))
 
 
 class Quiz(Base):
@@ -148,9 +138,6 @@ class QuizQuestions(Base):
     question = Column(String, nullable=False)
     quiz = Column(Integer, ForeignKey("quiz.id"), nullable=False)
 
-    __table_args__ = (UniqueConstraint("id", name="unique_quiz_question_id"),)
-
-
 
 class QuizAnswers(Base):
     __tablename__ = "quiz_answers"
@@ -158,8 +145,6 @@ class QuizAnswers(Base):
     answer = Column(String)
     quiz = Column(Integer, ForeignKey("quiz_question.id"), nullable=False)
     student_id = Column(Integer, ForeignKey("user.id"), nullable=False)
-
-    __table_args__ = (UniqueConstraint("id", name="unique_quiz_question_id"),)
 
 
 class Chat(Base):
@@ -169,11 +154,8 @@ class Chat(Base):
     get_id = Column(Integer, ForeignKey("user.id"), nullable=False)
     message = Column(String)
 
-    __table_args__ = (UniqueConstraint("id", name="unique_quiz_question_id"),)
 
-    
-
-def init():
+def create_database():
     """Creating database tables"""
     engine = create_engine(
         os.environ.get("POSTGRES_SECRET"), echo=True, poolclass=NullPool
