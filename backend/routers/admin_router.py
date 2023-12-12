@@ -11,7 +11,7 @@ from utils.util import Util
 router = APIRouter()
 
 
-@router.get("/init_database")
+@router.post("/init_database")
 def init_database_endpoint():
     """Initialize database, create tables"""
 
