@@ -1,12 +1,14 @@
 """Some useful util functions"""
 
 import os
+import logging
 
 import boto3
+import redis
+
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 
-import logging
 
 logger = logging.getLogger(__name__)
 
@@ -50,3 +52,7 @@ class Util:
     def s3_delete(cls, path):
         client, bucket = cls.s3_connect()
         client.delete_object(Bucket=bucket, Key=path)
+
+    @staticmethod
+    def get_redis_client():
+        return redis.Redis(host="redis", port=6379, db=0)
