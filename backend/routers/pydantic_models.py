@@ -15,6 +15,7 @@ class UserRegisterForm(BaseModel):
     type: str
     group: Optional[str] = ""
 
+
 class UserLoginForm(BaseModel):
     username: str
     password: str
@@ -22,3 +23,23 @@ class UserLoginForm(BaseModel):
 
 class InsertUserTypeForm(BaseModel):
     name: str
+
+
+class UploadHometaskFrom(BaseModel):
+    token: str
+    student: str
+    teacher: str
+    file: bytes
+
+
+class WatchHometaskForm(BaseModel):
+    token: str
+    user: str
+    task_id: int
+
+
+class GradeHometaskForm(BaseModel):
+    token: str
+    teacher: str
+    task_id: int
+    grade: int

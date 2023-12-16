@@ -61,6 +61,8 @@ class Task(Base):
     student_id = Column(Integer, ForeignKey("user.id"), nullable=False)
     file_id = Column(Integer, ForeignKey("file.id"), nullable=False)
 
+    teacher_id = Column(Integer, ForeignKey("user.id"), nullable=False)
+
     grade = Column(Integer)
 
 
