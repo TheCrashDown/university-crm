@@ -14,3 +14,14 @@ class InsertUserForm(BaseModel):
     
 class InsertUserTypeForm(BaseModel):
     name: str
+
+
+class InsertQuizForm(BaseModel):
+    name: str
+
+class InsertQuizQuestionsForm(BaseModel):
+    question: str
+
+class InsertQuizAnswersForm(BaseModel):
+    answer: str
+

@@ -127,7 +127,7 @@ class Quiz(Base):
     __tablename__ = "quiz"
     id = Column(Integer, primary_key=True, unique=True)
     name = Column(String, nullable=False, unique=True)
-    teacher_name = Column(String)
+    teacher = Column(Integer, ForeignKey("user.id"), nullable=False)
 
     __table_args__ = (UniqueConstraint("name", name="unique_quiz_name"),)
 
