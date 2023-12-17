@@ -4,8 +4,8 @@ import uuid
 import bcrypt
 from fastapi import APIRouter
 from sqlalchemy import insert, select
-from backend.lib.models import Group, User, UserType
-from backend.utils.util import Util
+from lib.models import Group, User, UserType
+from utils.util import Util
 
 from routers.pydantic_models import UserLoginForm, UserRegisterForm
 

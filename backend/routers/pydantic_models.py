@@ -27,14 +27,18 @@ class InsertUserTypeForm(BaseModel):
 
 class InsertQuizForm(BaseModel):
     name: str
+    teacher_name: str
 
 
 class InsertQuizQuestionsForm(BaseModel):
     question: str
+    quiz_name: str
 
 
 class InsertQuizAnswersForm(BaseModel):
     answer: str
+    student_name: str
+    quiz_name: str
 
 
 class UploadHometaskFrom(BaseModel):

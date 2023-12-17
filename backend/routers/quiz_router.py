@@ -15,14 +15,14 @@ router = APIRouter()
 
 
 @router.post("/create_quiz")
-def quiz_insert(quiz: InsertQuizForm, teacher_name: str):
+def quiz_insert(quiz: InsertQuizForm):
     with Util.get_session() as session:
         data = session.execute(
             select(
                 User.id,
                 User.name,
             ).where(
-                User.username == teacher_name,
+                User.username == quiz.teacher_name,
                 UserType.name == "teacher",
             )
         ).first()
@@ -33,14 +33,14 @@ def quiz_insert(quiz: InsertQuizForm, teacher_name: str):
 
 
 @router.post("/create_quiz")
-def quiz_question_insert(question: QuizQuestions, quiz_name: str):
+def quiz_question_insert(question: InsertQuizQuestionsForm):
     with Util.get_session() as session:
         data = session.execute(
             select(
                 Quiz.id,
                 Quiz.name,
             ).where(
-                Quiz.name == quiz_name,
+                Quiz.name == question.quiz_name,
             )
         ).first()
 
@@ -50,14 +50,14 @@ def quiz_question_insert(question: QuizQuestions, quiz_name: str):
 
 
 @router.post("/create_quiz")
-def quiz_answer_insert(answer: QuizAnswers, student_name: str, quiz_name: str):
+def quiz_answer_insert(info: InsertQuizAnswersForm):
     with Util.get_session() as session:
         data_quiz = session.execute(
             select(
                 Quiz.id,
                 Quiz.name,
             ).where(
-                Quiz.name == quiz_name,
+                Quiz.name == info.quiz_name,
             )
         ).first()
 
@@ -66,11 +66,17 @@ def quiz_answer_insert(answer: QuizAnswers, student_name: str, quiz_name: str):
                 User.id,
                 User.name,
             ).where(
-                User.username == student_name,
+                User.username == info.student_name,
                 UserType.name == "student",
             )
         ).first()
 
-        session.execute(insert(Quiz).values(name=answer.answer))
+        session.execute(
+            insert(QuizAnswers).values(
+                answer=info.answer,
+                quiz=data_quiz["id"],
+                student_id=data_student["id"],
+            )
+        )
         session.commit()
     return {"success": True}
