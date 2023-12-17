@@ -1,10 +1,11 @@
 import logging
 from fastapi import APIRouter
 
-from lib.models import UserType, User, Task, File
+from lib.models import Event, UserType, User, Task, File
 from utils.util import Util
 from sqlalchemy import select, insert, update
 from routers.pydantic_models import (
+    UpdateEventForm,
     UserRegisterForm,
     WatchHometaskForm,
     GradeHometaskForm,
@@ -56,6 +57,8 @@ def watch_hometask_endpoint(info: WatchHometaskForm):
         if not r.exists(info.token) or r.get(info.token) != info.user:
             return {"success": True, "error": "Invalid token"}
 
+        Util.renew_token(r, info.token)
+
         with Util.get_session() as session:
             task = session.execute(
                 select(Task.id, File.link, User.username)
@@ -81,6 +84,8 @@ def grade_hometask_endpoint(info: GradeHometaskForm):
         if not r.exists(info.token) or r.get(info.token) != info.user:
             return {"success": True, "error": "Invalid token"}
 
+        Util.renew_token(r, info.token)
+
         with Util.get_session() as session:
             task = session.execute(
                 select(Task.id, File.link, User.username)
@@ -96,6 +101,47 @@ def grade_hometask_endpoint(info: GradeHometaskForm):
             )
             session.commit()
         return {"success": True}
+    except Exception as err:
+        logger.warning(err)
+        return {"success": False, "error": str(err)}
+
+
+@router.post("/update_event")
+def update_event_endpoint(info: UpdateEventForm):
+    try:
+        r = Util.get_redis_client()
+        if not r.exists(info.token):
+            return {"success": True, "error": "Invalid token"}
+
+        with Util.get_session() as session:
+            event = session.execute(
+                select(Event.id, User.username).join(User, User.id == Event.teacher)
+            ).first()
+
+            if event.username != r.get(info.token):
+                return {"success": True, "error": "No access to this event"}
+
+            Util.renew_token(r, info.token)
+
+            session.execute(
+                update(Event)
+                .where(Event.id == event.id)
+                .values(
+                    name=info.name,
+                    teacher=info.teacher,
+                    classroom=info.classroom,
+                    start=info.start,
+                    end=info.end,
+                    description=info.description,
+                    classroom_id=info.classroom_id,
+                    materials=info.materials,
+                    task=info.task,
+                )
+            )
+            session.commit()
+
+        return {"success": True}
+
     except Exception as err:
         logger.warning(err)
         return {"success": False, "error": str(err)}

@@ -59,3 +59,18 @@ class GradeHometaskForm(BaseModel):
     teacher: str
     task_id: int
     grade: int
+
+
+class UpdateEventForm(BaseModel):
+    token: str
+    event_id: int
+
+    name: Optional[str] = ""
+    teacher: Optional[str] = ""
+    classroom: Optional[str] = ""
+    start: Optional[str] = ""
+    end: Optional[str] = ""
+    description: Optional[str] = ""
+    classroom_id: Optional[int] = ""
+    materials: Optional[str] = ""
+    task: Optional[str] = ""
