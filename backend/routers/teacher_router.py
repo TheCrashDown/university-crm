@@ -10,11 +10,6 @@ from routers.pydantic_models import InsertUserTypeForm, InsertUserForm
 router = APIRouter()
 
 
-@router.get("/TEST")
-def TEST():
-    return
-
-
 @router.post("/teacher_insert")
 def stud_insert(user: InsertUserForm, ):
     with Util.get_session() as session:
@@ -40,3 +35,12 @@ def stud_select():
 
         data = [i._asdict() for i in data]
     return {"success": True, "data": data}
+  
+@router.get("/watch_hometask")
+def watch_hometask_endpoint():
+    return {"success": True, "data": []}
+
+
+@router.post("/grade_hometask")
+def grade_hometask_endpoint():
+    return {"success": True, "data": []}
