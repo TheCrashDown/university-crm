@@ -1,18 +1,60 @@
+import logging
+import uuid
 from fastapi import APIRouter
 from sqlalchemy import insert, select
 
-from lib.models import UserType, User
+from lib.models import UserType, User, File, Task
 
-from routers.pydantic_models import InsertUserTypeForm, UserRegisterForm
+from routers.pydantic_models import UploadHometaskFrom, UserRegisterForm
 
 from utils.util import Util
 
 router = APIRouter()
 
+logger = logging.getLogger(__name__)
+
 
 @router.post("/upload_hometask")
-def upload_hometask_endpoint():
-    return {"success": True}
+def upload_hometask_endpoint(info: UploadHometaskFrom):
+    try:
+        r = Util.get_redis_client()
+        if not r.exists(info.token) or r.get(info.token) != info.student:
+            return {"success": True, "error": "Invalid token"}
+
+        path = f"/hometasks/{uuid.uuid4()}"
+        Util.s3_create(path, info.file)
+
+        with Util.get_session() as session:
+            file_id = session.execute(
+                insert(File)
+                .values(
+                    link=path,
+                )
+                .returning(File.id)
+            )
+
+            student_id = session.execute(
+                select(User.id).where(User.username == info.student)
+            ).first()
+
+            teacher_id = session.execute(
+                select(User.id).where(User.username == info.teacher)
+            ).first()
+
+            session.execute(
+                insert(Task).values(
+                    file_id=file_id.scalar(),
+                    teacher_id=teacher_id,
+                    student_id=student_id,
+                )
+            )
+
+            session.commit()
+
+        return {"success": True}
+    except Exception as err:
+        logger.warning(err)
+        return {"success": False, "error": str(err)}
 
 
 @router.post("/student_insert")
