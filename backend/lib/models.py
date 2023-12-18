@@ -150,12 +150,13 @@ class QuizAnswers(Base):
     student_id = Column(Integer, ForeignKey("user.id"), nullable=False)
 
 
-class Chat(Base):
-    __tablename__ = "chat"
+class Message(Base):
+    __tablename__ = "message"
     id = Column(Integer, primary_key=True)
     from_id = Column(Integer, ForeignKey("user.id"), nullable=False)
-    get_id = Column(Integer, ForeignKey("user.id"), nullable=False)
-    message = Column(String)
+    to_id = Column(Integer, ForeignKey("user.id"), nullable=False)
+    timestamp = Column(DateTime)
+    content = Column(String)
 
 
 def create_database():

@@ -74,3 +74,18 @@ class UpdateEventForm(BaseModel):
     classroom_id: Optional[int] = ""
     materials: Optional[str] = ""
     task: Optional[str] = ""
+
+
+class GetMessagesForm(BaseModel):
+    token: str
+
+    from_id: int
+    to_id: int
+
+
+class SendMessageForm(BaseModel):
+    token: str
+
+    from_id: int
+    to_id: int
+    content: str
