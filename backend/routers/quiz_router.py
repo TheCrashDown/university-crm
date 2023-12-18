@@ -14,7 +14,7 @@ from routers.pydantic_models import (
 router = APIRouter()
 
 
-@router.post("/create_quiz")
+@router.post("/create")
 def quiz_insert(quiz: InsertQuizForm):
     with Util.get_session() as session:
         data = session.execute(
@@ -32,7 +32,7 @@ def quiz_insert(quiz: InsertQuizForm):
     return {"success": True}
 
 
-@router.post("/create_quiz")
+@router.post("/insert_question")
 def quiz_question_insert(question: InsertQuizQuestionsForm):
     with Util.get_session() as session:
         data = session.execute(
@@ -49,7 +49,7 @@ def quiz_question_insert(question: InsertQuizQuestionsForm):
     return {"success": True}
 
 
-@router.post("/create_quiz")
+@router.post("/answer_question")
 def quiz_answer_insert(info: InsertQuizAnswersForm):
     with Util.get_session() as session:
         data_quiz = session.execute(
